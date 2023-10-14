@@ -6,10 +6,14 @@ import useOnlineStatus from './hooks/useOnlineStatus';
 import { useLayoutEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { closeMenu } from './features/app/appSlice';
+import useAlan from './components/Alan';
+import React,{useRef} from 'react';
 
 const App = () => {
   const { pathname } = useLocation();
   const isOnline = useOnlineStatus();
+  const alanBtn = useRef();
+  useAlan()
   const { isMenuOpen } = useSelector((state) => state.app);
   const dispatch = useDispatch();
 
@@ -27,6 +31,7 @@ const App = () => {
           <Toaster />
           <Header />
           <Outlet />
+          <div ref={alanBtn}></div>
           <Footer />
         </>
       ) : (

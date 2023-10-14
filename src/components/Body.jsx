@@ -1,32 +1,31 @@
 import { MagnifyingGlassIcon } from '@heroicons/react/24/outline';
-import { useEffect, useRef, useState } from 'react';
+import { useRef } from 'react';
 import useRestaurants from '../hooks/useRestaurants';
 import { GET_RESTAURANTS_URL } from '../utils/constants';
 import BannerList from './BannerList';
 import FoodList from './FoodList';
 import RestaurantList from './RestaurantList';
+import { useDispatch, useSelector } from 'react-redux';
+import { setFilteredRestaurants } from '../features/address/restaurantReducer';
 
 const Body = () => {
-  const { banners, foods, restaurants, isLoading } =
-    useRestaurants(GET_RESTAURANTS_URL);
-  const [filteredRestaurants, setFilteredRestaurants] = useState([]);
-  const serachRef = useRef();
+  const { banners, foods, restaurants, isLoading } = useRestaurants(GET_RESTAURANTS_URL);
+  const searchRef = useRef();
+  const dispatch = useDispatch();
+
+  // Get the filtered restaurants from Redux store
+  const filteredRestaurants = useSelector((state) => state.restaurants.filteredRestaurants);
 
   const handleSearch = (e) => {
     e.preventDefault();
+    const searchTerm = searchRef.current.value.toLowerCase();
 
-    setFilteredRestaurants(
-      restaurants.filter((rest) =>
-        rest.info.name
-          .toLowerCase()
-          .includes(serachRef.current.value.toLowerCase())
-      )
-    );
+    // Filter the restaurants based on the search term
+    const filtered = restaurants.filter((rest) => rest.info.name.toLowerCase().includes(searchTerm));
+
+    // Dispatch an action to update the filtered restaurants in Redux
+    dispatch(setFilteredRestaurants(filtered));
   };
-
-  useEffect(() => {
-    setFilteredRestaurants(restaurants);
-  }, [isLoading]);
 
   return (
     <div className='bg-white relative py-8'>
@@ -47,7 +46,7 @@ const Body = () => {
           id='search'
           placeholder='Search for Chicken Biriyani'
           className='p-2 px-4 rounded-md border outline-none focus-within:border-orange-400 border-gray-200 grow w-full'
-          ref={serachRef}
+          ref={searchRef}
         />
         <button
           type='submit'
@@ -59,9 +58,9 @@ const Body = () => {
       </form>
 
       {/* restaurant list */}
-
       <RestaurantList isLoading={isLoading} restaurants={filteredRestaurants} />
     </div>
   );
 };
+
 export default Body;
