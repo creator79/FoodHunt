@@ -2,8 +2,8 @@ import { createContext, useReducer } from 'react';
 
 const INITIAL_STATE = {
   userInfo: {
-    name: 'Dinesh Rout',
-    email: 'dinesh@gmail.com',
+    name: 'Vivek Upadhyay',
+    email: 'abc@gmail.com',
   },
 };
 
